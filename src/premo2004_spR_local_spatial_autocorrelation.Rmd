@@ -22,7 +22,8 @@ spX <- SpatialPointsDataFrame(coo, X, proj4string=CRS(as.character(NA)))
 coords <- coordinates(spX)
 id <- row.names(as(spX, "data.frame"))
 # table1
-X
+library(knitr)
+kable(X)
 ```
 
 > Table 1 presents the spatial data used in this analysis. Note that it includes the same 47 sites that Bove[2], Whitley and Clark[19], Kvamme[7], and Williams[20] analyzed.
@@ -54,18 +55,17 @@ plot(X_nb75, coords, add=TRUE)
 # Spatial weights
 ## styles: W, B, C, U, S
 X_lw_W <- nb2listw(X_nb75, style="W")
-X_lw_W
 
 # global Moran scatterplot
 moran.plot(spX$Date..AD., listw=nb2listw(X_nb75, style="W"), labels=as.character(spX$Site.number))
 
 # local Moran's I
 I <- spdep::localmoran(spX$Date..AD., listw=nb2listw(X_nb75, style="W"))
-I
+##kable(I)
 
 # local Getis G
 G <- spdep::localG(spX$Date..AD., listw=nb2listw(X_nb75, style="W"))
-G
+##kable(G)
 ```
 
 > Standardized Ii and Gi variates were calculated for lag distances up to and including 200 km at 25 km intervals (Table 2).
