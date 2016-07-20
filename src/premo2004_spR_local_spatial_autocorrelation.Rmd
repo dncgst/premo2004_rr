@@ -1,0 +1,90 @@
+---
+title: "Premo 2004"
+subtitle: "Local spatial autocorrelation"
+author: "Domenico Giusti"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 4. Spatial data and methods
+
+```{r}
+library(sp)
+library(maptools)
+# read data
+setwd("~/project/premo2004_rr/")
+X <- read.csv("data/Premo2004_table1.csv", header=TRUE, sep=",", skip=0)
+coo <- X[,c(4,3)]
+spX <- SpatialPointsDataFrame(coo, X, proj4string=CRS(as.character(NA)))
+coords <- coordinates(spX)
+id <- row.names(as(spX, "data.frame"))
+# table1
+X
+```
+
+> Table 1 presents the spatial data used in this analysis. Note that it includes the same 47 sites that Bove[2], Whitley and Clark[19], Kvamme[7], and Williams[20] analyzed.
+
+```{r}
+library(ggplot2)
+# fig.1
+ggplot(data=X, aes(x=Easting..km., y=Northing..km., col=Date..AD.)) + geom_point() + theme_bw() + xlab("Km East") + ylab("Km North") + ggtitle("Fig.1")
+```
+
+> Fig.1. Fourth order trend surface with terminal long-count date locations. Map values are in years AD. Sites are numbered consecutively and identified by name in Table 1.
+
+```{r}
+library(spdep)
+
+# Nearest neighbour
+## k nearest neighbour
+X_kn1 <- knn2nb(knearneigh(coords, k=1), row.names=id)
+## nearest neighbour based on a specified distance
+dis <- unlist(nbdists(X_kn1, coords))
+summary(dis)
+X_kd1 <- dnearneigh(coords, d1=0, d2=.75*max(dis), row.names=id)
+## nearest neighbour by row distance
+X_nb75 <- dnearneigh(coords, d1=0, d2=75, row.names=id)
+### plot
+plot(spX)
+plot(X_nb75, coords, add=TRUE)
+
+# Spatial weights
+## styles: W, B, C, U, S
+X_lw_W <- nb2listw(X_nb75, style="W")
+X_lw_W
+
+# global Moran scatterplot
+moran.plot(spX$Date..AD., listw=nb2listw(X_nb75, style="W"), labels=as.character(spX$Site.number))
+
+# local Moran's I
+I <- spdep::localmoran(spX$Date..AD., listw=nb2listw(X_nb75, style="W"))
+I
+
+# local Getis G
+G <- spdep::localG(spX$Date..AD., listw=nb2listw(X_nb75, style="W"))
+G
+```
+
+> Standardized Ii and Gi variates were calculated for lag distances up to and including 200 km at 25 km intervals (Table 2).
+
+## 5. Results
+
+```{r}
+# fig.2
+spI <- maptools::spCbind(spX, as.data.frame(I))
+# bubble plot
+bubble(spI, "Ii", fill=TRUE, col=c("grey","black"), main="Fig.2", xlab="Km East", ylab="Km North")
+# ggplot2
+ggplot(data=as.data.frame(spI), aes(x=Easting..km., y=Northing..km.)) + geom_point(aes(colour=Ii, size=abs(Ii))) + scale_colour_gradient2(midpoint=0) + scale_radius() + theme_bw() + xlab("Km East") + ylab("Km North") + ggtitle("Fig.2")
+```
+
+> Fig.2 presents standardized Ii variates at a lag distance of 75 km...
+
+```{r}
+# fig.3
+```
+
+> Fig.3 presents standardized Gi scores at a lag distance of 75 km...
