@@ -112,27 +112,50 @@ X_nb_lags <- nblag(X_kn1, maxlag=8)
 ```{r}
 # > The nb2listw function takes a neighbours list object and convert it into a weights object. The default conversion style is W, where the weights for each areal entity are standardised to sum to unity [@Bivand2008, p.251]
 X_lw_W <- nb2listw(X_nb75, style="W")
+
 # B style (binary)
 X_lw_B <- nb2listw(X_nb75, style="B")
+
 # C
 X_lw_C <- nb2listw(X_nb75, style="C")
+
 # U
 X_lw_U <- nb2listw(X_nb75, style="U")
+
 # S
 X_lw_S <- nb2listw(X_nb75, style="S")
 ```
 
 #### Spatial autocorrelation: global tests
 
+##### Normal and Randomization Inference
+
 ```{r}
 # global tests
 ## Moran's I
-moran.test(spX$Date..AD., listw=nb2listw(X_nb25), zero.policy=TRUE, adjust.n=TRUE)
-## >
-moran.test(spX$Date..AD., listw=nb2listw(X_nb75, style="W"))
+### > The randomisation option is set to TRUE by default, which implies that in order to get inference based on a normal approximation, it must be explicitly set to FALSE. Similarly, the default is a one-sided test, so that in order to obtain the results for the (more commonly used) two-sided test, the option alternative must be set explicitly to "two.sided". Note also that the zero.policy option is set to FALSE by default, which means that islands result in a missing value code (NA). Setting this option to TRUE will set the spatial lag for islands to the customary zero value. moran.test(spX$Date..AD., listw=nb2listw(X_nb25), zero.policy=TRUE, adjust.n=TRUE) [@Anselin]
+I <- moran.test(spX$Date..AD., listw=nb2listw(X_nb75, style="W"))
+
 ## Geary's C
+
 ## Getis-Ord G
 ```
+
+##### Permutation Inference
+
+```{r}
+# global tests
+## Moran's I
+set.seed(123456)
+I_mc <- moran.mc(spX$Date..AD., listw=nb2listw(X_nb75, style="W"), 99)
+I_mc$res
+foo <- I_mc$res[1:length(I_mc$res)-1] #remove the last element
+bar <- density(foo)
+### plot three graphs on top of each other: a (continuous) density function (based on zz), a histogram for the reference distribution, and a line indicating the observed Moran’s I.
+plot(bar, ylim=c(0,30), col=2, main="Moran's I permutation test"); hist(foo, freq=TRUE, add=TRUE); abline(v=I_mc$statistic, col=4)
+```
+
+##### Correlogram & Plot
 
 ```{r}
 # correlograms
@@ -146,11 +169,18 @@ library(pgirmess)
 X_corD <- correlog(coordinates(spX), spX$Date..AD., method="Moran")
 print(X_corD)
 plot(X_corD)
+## Moran's I for regression residuals
+
+X_res <- sp.correlogram(neighbours=X_nb75, residuals())
 ```
 
 ```{r}
 # global Moran scatterplot
+par(pty="s")
 moran.plot(spX$Date..AD., listw=nb2listw(X_nb75, style="W"), labels=as.character(spX$Site.number))
+
+# standardized Moran scatterplot
+standard.moran.plot(spX$Date..AD., nb2listw(X_nb75, style="W"))
 ```
 
 #### Spatial autocorrelation: local tests
@@ -159,10 +189,15 @@ moran.plot(spX$Date..AD., listw=nb2listw(X_nb75, style="W"), labels=as.character
 
 ```{r}
 # local Moran's I
-I <- spdep::localmoran(spX$Date..AD., listw=nb2listw(X_nb75, style="W"))
+I_loc <- spdep::localmoran(spX$Date..AD., listw=nb2listw(X_nb75, style="W"))
+# local Moran's I (two.sided)
+I_loc <- spdep::localmoran(spX$Date..AD., listw=nb2listw(X_nb75, style="W"), alternative="two.sided")
+# standardized local Moran's I
+scale(I_loc[,1])
 
 # local Getis G
-G <- spdep::localG(spX$Date..AD., listw=nb2listw(X_nb75, style="W"))
+G_loc <- spdep::localG(spX$Date..AD., listw=nb2listw(X_nb75, style="W"))
+scale(G_loc[,1])
 ```
 
 ## 5. Results
