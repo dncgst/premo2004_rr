@@ -2,7 +2,7 @@
 title: "Premo 2004 - Reproduced Research"
 subtitle: "Local spatial autocorrelation"
 author: "Domenico Giusti"
-bibliography: "../doc/premo2004_rr.bib"
+bibliography: "../premo2004_rr.bib"
 output: html_document
 ---
 
@@ -16,16 +16,12 @@ knitr::opts_chunk$set(echo = TRUE)
 # read csv
 setwd("~/project/premo2004_rr/")
 X <- read.csv("data/Premo2004_table1.csv", header=TRUE, sep=",", skip=0)
-```
 
-```{r}
 # convert to SpatialPointDataframe
 library(sp)
 coo <- X[,c(4,3)]
 spX <- SpatialPointsDataFrame(coo, X, proj4string=CRS(as.character(NA)))
-```
 
-```{r}
 coords <- coordinates(spX)
 id <- row.names(as(spX, "data.frame"))
 ```
@@ -38,13 +34,21 @@ library(knitr)
 kable(X)
 ```
 
-> Table 1 presents the spatial data used in this analysis. Note that it includes the same 47 sites that Bove[2], Whitley and Clark[19], Kvamme[7], and Williams[20] analyzed. [@Premo2004]
+> Table 1 presents the spatial data used in this analysis. Note that it includes the same 47 sites that [@Bove1981], [@Whitley1985], [@Kvamme1990], and [@Williams1993] analyzed. [@Premo2004]
 
 ```{r}
 # fig.0
 library(ggplot2)
 ggplot(data=X, aes(x=Easting..km., y=Northing..km., col=Date..AD.)) + geom_point() + coord_fixed(ratio=1) + theme_bw() + xlab("Km East") + ylab("Km North") + ggtitle("Fig.0")
+```
 
+### Trend surface analysis
+
+```{r}
+# trend surface analysis
+```
+
+```{r}
 # fig.1
 ```
 
@@ -67,17 +71,17 @@ library(spdep)
 library(tripack)
 ## Delauney triangulation neighbours
 X_del <- tri2nb(coords, row.names=id)
-X_del <- deldir::deldir(as.data.frame(coords), plotit=TRUE)
+X_del <- deldir::deldir(as.data.frame(coords), plotit=TRUE, main="Delauney triangulation neighbours")
 ## Sphere of Influence neighbours
 X_soi <- graph2nb(soi.graph(X_del, coords), row.names=id)
 ## Gabriel graph neighbours
 X_gab <- graph2nb(gabrielneigh(coords), row.names=id)
+plot(X$Easting..km., X$Northing..km., xlim=c(0,400), asp=1, main="Gabriel graph neighbours")
+plot(X_gab, coords, add=TRUE)
 ## Relative graph neighbours
 X_rel <- graph2nb(relativeneigh(coords), row.names=id)
-### plot
-plot(X$Easting..km., X$Northing..km.)
-plot(X_del, add=TRUE)
-plot(X_gab, coords, add=TRUE)
+plot(X$Easting..km., X$Northing..km., xlim=c(0,400), asp=1, main="Relative graph neighbours")
+plot(X_rel, coords, add=TRUE)
 
 # distance-based neighbours
 # > An alternative method is to choose the k nearest neighbours [...] knearneigh can also take a longlat argument to handle geographical coordinates. [@Bivand2008, p.246]
@@ -116,13 +120,13 @@ X_lw_W <- nb2listw(X_nb75, style="W")
 # B style (binary)
 X_lw_B <- nb2listw(X_nb75, style="B")
 
-# C
+# C style
 X_lw_C <- nb2listw(X_nb75, style="C")
 
-# U
+# U style
 X_lw_U <- nb2listw(X_nb75, style="U")
 
-# S
+# S style
 X_lw_S <- nb2listw(X_nb75, style="S")
 ```
 

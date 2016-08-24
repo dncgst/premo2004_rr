@@ -1,0 +1,76 @@
+% This file was created with JabRef 2.10.
+% Encoding: UTF8
+
+
+@Article{Kvamme1990,
+  Title                    = {Spatial Autocorrelation and the Classic Maya Collapse revisited: Refined techniques and new conclusions},
+  Author                   = {Kenneth L. Kvamme},
+  Journal                  = {Journal of Archaeological Science},
+  Year                     = {1990},
+  Number                   = {2},
+  Pages                    = {197 - 207},
+  Volume                   = {17},
+
+  Doi                      = {http://dx.doi.org/10.1016/0305-4403(90)90059-E},
+  File                     = {Kvamme1990.pdf:science_article/Kvamme1990.pdf:PDF},
+  ISSN                     = {0305-4403},
+  Keywords                 = {Spatial autocorrelation, Spatial Analysis,},
+  Owner                    = {dncgst},
+  Timestamp                = {2016.07.15},
+  Url                      = {http://www.sciencedirect.com/science/article/pii/030544039090059E}
+}
+
+@Article{Premo2004,
+  Title                    = {Local spatial autocorrelation statistics quantify multi-scale patterns in distributional data: an example from the Maya Lowlands },
+  Author                   = {L.S. Premo},
+  Journal                  = {Journal of Archaeological Science },
+  Year                     = {2004},
+  Number                   = {7},
+  Pages                    = {855 - 866},
+  Volume                   = {31},
+
+  Doi                      = {http://dx.doi.org/10.1016/j.jas.2003.12.002},
+  File                     = {Premo2004.pdf:science_article/Premo2004.pdf:PDF},
+  ISSN                     = {0305-4403},
+  Keywords                 = {Spatial autocorrelation, Spatial analysis,},
+  Owner                    = {dncgst},
+  Timestamp                = {2014.09.03},
+  Url                      = {http://www.sciencedirect.com/science/article/pii/S0305440303001948}
+}
+
+@Article{Whitley1985,
+  Title                    = {Spatial autocorrelation tests and the Classic Maya collapse: Methods and inferences},
+  Author                   = {David S. Whitley and William A.V. Clark},
+  Journal                  = {Journal of Archaeological Science},
+  Year                     = {1985},
+  Number                   = {5},
+  Pages                    = {377 - 395},
+  Volume                   = {12},
+
+  Doi                      = {http://dx.doi.org/10.1016/0305-4403(85)90066-4},
+  File                     = {Whitley1985.pdf:science_article/Whitley1985.pdf:PDF},
+  ISSN                     = {0305-4403},
+  Keywords                 = {Spatial autocorrelation, Spatial Analysis,},
+  Owner                    = {dncgst},
+  Timestamp                = {2016.07.15},
+  Url                      = {http://www.sciencedirect.com/science/article/pii/0305440385900664}
+}
+
+@Article{Williams1993,
+  Title                    = {Spatial Autocorrelation and the Classic Maya Collapse: One Technique, One Conclusion},
+  Author                   = {Jeff T. Williams},
+  Journal                  = {Journal of Archaeological Science},
+  Year                     = {1993},
+  Number                   = {6},
+  Pages                    = {705 - 709},
+  Volume                   = {20},
+
+  Doi                      = {http://dx.doi.org/10.1006/jasc.1993.1044},
+  File                     = {Williams1993.pdf:science_article/Williams1993.pdf:PDF},
+  ISSN                     = {0305-4403},
+  Keywords                 = {Spatial Autocorrelation, Spatial Analysis,},
+  Owner                    = {dncgst},
+  Timestamp                = {2016.07.15},
+  Url                      = {http://www.sciencedirect.com/science/article/pii/S0305440383710447}
+}
+
