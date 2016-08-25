@@ -139,6 +139,14 @@ X_lw_S <- nb2listw(X_nb75, style="S")
 
 #### Spatial autocorrelation: global tests
 
+> [@Moran1948] proposed a coefficient of spatial autocorrelation, Moran's _I_, stemming from the Pearson correlation coefficient [...]. As with Pearson's correlation coeffient, positive autocorrelation is indicated by positive values (usually ranging from 0 to 1), negative autocorrelation by negative values (usually ranging from 0 to -1) and the expected value for the absence of spatial autocorrelation is close to 0 [...]. When there are too few pairs of sampling locations in distance class d, and the spatial layout of the data looks non-stationary, the estimated values is unstable and can fall outside the expected bounded range of -1 to +1. This occurs most often at the largest distances where there are fewest pairs contributing to the index. [@Dale2014, p.145]
+
+> The spatial autocorrelation coeficient, for a distance class d, is the average value of spatial autocorrelation at that distance (in all directions) for the entire study area: a _global average isotropic_ estimated value of spatial autocorrelation. [@Dale2014, p.146]
+
+> Furthermore, by compution the deviation of each value from the arithmetic mean of the variable, the estimation of spatial autocorrelation can be biased when the data are not normally distributed. [@Dale2014, p.146]
+
+> To avoid measures of spatial patter based on deviation from the arithmetic mean, [@Geary1954] proposed another spatial autocorrelation coefficient, Geary's _c_, that measures the difference between values of a variable at nearby locations, so that the degree of spatial autocorrelation is based on differences at a given _d_ distance class. [it] varies from 0 (indicating the highest value of positive autocorrelation) to 2 and greater (strong negative autocorrelation). [@Dale2014, p.146]
+
 ##### Normal and Randomization Inference
 
 ```{r}
@@ -148,9 +156,7 @@ X_lw_S <- nb2listw(X_nb75, style="S")
 I <- moran.test(spX$Date..AD., listw=nb2listw(X_nb75, style="W"))
 I
 
-## Geary's C
-
-## Getis-Ord G
+## Geary's c
 ```
 
 ##### Permutation Inference
@@ -176,13 +182,17 @@ X_cor8 <- sp.correlogram(neighbours=X_nb25, var=spX$Date..AD., order=8, method="
 X_cor3 <- sp.correlogram(neighbours=X_nb25, var=spX$Date..AD., order=3, method="I", style="W", zero.policy = TRUE)
 print(X_cor3, p.adjust.methods="holm")
 plot(X_cor3)
-## Moran's I for distance bands
-library(pgirmess)
-X_corD <- correlog(coordinates(spX), spX$Date..AD., method="Moran")
-print(X_corD)
-plot(X_corD)
 ## Moran's I for regression residuals
 X_res <- sp.correlogram(neighbours=X_nb75, residuals())
+## Moran's I (or Geary's c) for distance bands
+library(pgirmess)
+X_corD <- pgirmess::correlog(coordinates(spX), spX$Date..AD., method="Moran", nbclass=8)
+print(X_corD)
+plot(X_corD); abline(h=0, lty=2) #Moran
+plot(X_corD); abline(h=1, lty=2) #Geary
+## Moran's I
+library(ncf)
+ncf::plot.correlog(ncf::correlog(x=spX$Easting..km., y=spX$Northing..km., z=spX$Date..AD., increment=25))
 ```
 
 ```{r}
@@ -196,27 +206,71 @@ standard.moran.plot(spX$Date..AD., nb2listw(X_nb75, style="W"))
 
 #### Spatial autocorrelation: local tests
 
+> While the average value of spatial dependence is meangful where only one process occurs (either induced or inherent dependence), it is misleading when several processes act at various intensities in different parts of the study area. [@Dale2014, p.164]
+
+> [@Anselin1995] proposed 'LISA' (local indicator of spatial association) as an acronym for those local spatial statistics. [@Dale2014, p.164]
+
+> [...] positive values of _Ii_ indicate that the values in the vicinity of location _i_ and at locaion _i_ are either all larger (positive deviation) or smaller (negative deviation) than the average. Negative values of _Ii_ also indicate that the deviation from the the average is either larger or smaller than the average but where the value at location _i_ is of a different sign from its neighbours. When the value of _Ii_ is close to zero, the deviation from the average is small and no local spatial structure can be detected. [@Dale2014, p.165]
+
+> [@Getis1992] proposed two new local spatial statistics: local _Gi_ in which the value at location _i_ is excluded from the computation; and local _G*i_ in which the value at location _i_ is included. [...] These statistics detect clusters of either high or low values, which are often referred to as 'hot spot' or 'cold spot', respectively [@Dale2014, p.167]
+
 > Standardized Ii and Gi variates were calculated for lag distances up to and including 200 km at 25 km intervals (Table 2). [@Premo2004]
+
+```{r}
+# tab.2
+## lag distances
+lag <- seq(25, 200, 25)
+
+## matrix
+tab2 <- matrix(data=NA, nrow=47, ncol=18)
+colnames(tab2) <- c("Site", "Date(AD)", "")
+
+## loop
+for (i in lag) {
+  
+}
+```
+
+> Table2. Standardized I i and G i* variates at lag distances from 25 to 200 km. Note that “–” is reported for sites that possess zero neighbors [@Premo2004]
 
 ```{r}
 # local Moran's I
 I_loc <- spdep::localmoran(spX$Date..AD., listw=nb2listw(X_nb75, style="W"))
 # local Moran's I (two.sided)
 I_loc <- spdep::localmoran(spX$Date..AD., listw=nb2listw(X_nb75, style="W"), alternative="two.sided")
-# standardized local Moran's I
-scale(I_loc[,1])
-I_loc
 
 # local Getis G
 G_loc <- spdep::localG(spX$Date..AD., listw=nb2listw(X_nb75, style="W"))
-G_loc
 ```
 
+```{r}
+# alternative packages: lctools, 
+library(lctools)
+## local Moran's I
+I_loc <- lctools::l.moransI(coords,1,spX$Date..AD.)
+```
+
+> While consideration of raw statistics does not materially change conclusions, in the interests of convenience and clarity, only standardized results will be discussed [...]. [@Premo2004]
+
+```{r}
+# standardized local Moran's I
+scale(I_loc[,2])
+I_loc
+```
+
+```{r}
+
+```
+
+
 ## 5. Results
+
+> The results of the 75 km spatial lag were interpreted for two reasons. First, given the spatial distribution of the dated monuments, this particular lag distance provides the highest resolution at which each site belonged to a neighbourhood composed of at least one other site (i.e., there is no "neighbourhood" composed only of the target site). Second, this lag distance approximates the spatial lag at which the sill is apparent in the semi-variance of [@Neiman1997]'s loess trend surface residuals. [...] Depending on the spatial structure of one's data, local spatial autocorrelation results can be highly sensitive to variation in lag distance. [@Premo2004]
 
 ```{r}
 # 
 spI <- maptools::spCbind(spX, as.data.frame(I))
+spI <- maptools::spCbind(spX, as.data.frame(G_loc))
 
 # ggplot2
 ggplot(data=as.data.frame(spI), aes(x=Easting..km., y=Northing..km.)) + geom_point(aes(colour=Ii, size=abs(Ii))) + scale_colour_gradient2(midpoint=0) + scale_radius() + coord_fixed(ratio=1) + theme_bw() + xlab("Km East") + ylab("Km North") + ggtitle("Fig.2")
@@ -224,16 +278,22 @@ ggplot(data=as.data.frame(spI), aes(x=Easting..km., y=Northing..km.)) + geom_poi
 
 ```{r}
 # fig.2
-## bubble plot
+## bubble plot local Moran's I
 bubble(spI, "Ii", fill=TRUE, col=c("grey","black"), main="Fig.2", xlab="Km East", ylab="Km North")
+## bubble plot local Getis's G
+bubble(as.data.frame(G_loc), "Ii", fill=TRUE, col=c("grey","black"), main="Fig.2", xlab="Km East", ylab="Km North")
 ```
 
-> Fig.2 presents standardized Ii variates at a lag distance of 75 km...
+> Fig.2 presents standardized Ii variates at a lag distance of 75 km. [...] Large positive Ii scores are indicative of positive local spatial autocorrelation, where neighbouring sites display terminal dates that are similar to that of the target site. These scores mark spatially defined concentrations of comparable terminal dates [...]. Sites assigned negative Ii scores posses terminal long-count dates that are quite dissimilar from those of their neighbors. [@Premo2004]
+
+> Many of these scores identify neighborhoods composed of sites where elites erected monuments well into the 9th century AD. However, some positive Ii scores identify neigborhoods composed of sites with early terminal monument dates. One must consult a target's Gi result to distinguish between these two possibilities; positive Gi scores are indicative of the former and negative Gi scores signify the latter. [@Premo2004]
+
+> [...] in case of both positive and negative Ii scores, local Moran's Ii alone provide no additional information that can be used to judge which of the alternative interpretations is most accurate. [...] Gi also must be considered. [@Premo2004]
 
 ```{r}
 # fig.3
 ```
 
-> Fig.3 presents standardized Gi scores at a lag distance of 75 km...
+> Fig.3 presents standardized Gi scores at a lag distance of 75 km. In this context positive scores are indicative of neighborhoods composed (mostly) of sites possessing late terminal long-count dates, and scores near zero identify neighborhoods whose terminal long-count dates when summed are intermediate by comparison. [@Premo2004]
 
 ## References
