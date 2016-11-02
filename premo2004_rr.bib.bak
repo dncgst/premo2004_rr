@@ -48,6 +48,19 @@
   Timestamp                = {2016.08.19}
 }
 
+@Article{Getis1992,
+  Title                    = {The analysis of spatial association by use of distance statistics},
+  Author                   = {A. Getis and J.K. Ord},
+  Journal                  = {Geographical Analysis},
+  Year                     = {1992},
+  Pages                    = {189–206},
+  Volume                   = {24},
+
+  Keywords                 = {Spatial Analysis, Spatial Autocorrelation,},
+  Owner                    = {dncgst},
+  Timestamp                = {2016.08.25}
+}
+
 @Article{Kvamme1990,
   Title                    = {Spatial Autocorrelation and the Classic Maya Collapse revisited: Refined techniques and new conclusions},
   Author                   = {Kenneth L. Kvamme},
