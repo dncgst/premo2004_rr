@@ -111,15 +111,9 @@ X_nb_lags <- nblag(X_kn1, maxlag=8)
 
 ```{r}
 # > The nb2listw function takes a neighbours list object and convert it into a weights object. The default conversion style is W, where the weights for each areal entity are standardised to sum to unity [@Bivand2008, p.251]
-X_lw_W <- nb2listw(X_nb75, style="W")
+# > The spatial weight matrix used in the present analysis is binary. [@Premo2004]
 # B style (binary)
 X_lw_B <- nb2listw(X_nb75, style="B")
-# C
-X_lw_C <- nb2listw(X_nb75, style="C")
-# U
-X_lw_U <- nb2listw(X_nb75, style="U")
-# S
-X_lw_S <- nb2listw(X_nb75, style="S")
 ```
 
 #### Spatial autocorrelation: global tests
@@ -159,9 +153,11 @@ moran.plot(spX$Date..AD., listw=nb2listw(X_nb75, style="W"), labels=as.character
 
 ```{r}
 # local Moran's I
+# > Like its global predecessor, local I measures the degree to which a target value is similar to the values displayed by adjacent locales. Unlike global I, however, the local version measures the similarity between each target value and the values within its neighborhood. [...] Local Moran's I is large and positive when Xi is similar to adjacent values of Xj; large and negative when Xi and neighboring values Xj are dissimilar; and approximates to zero when no spatial autocorrelation exists between Xi and neighboring Xj. [@Premo2004]
 I <- spdep::localmoran(spX$Date..AD., listw=nb2listw(X_nb75, style="W"))
 
 # local Getis G
+# > G is positive when the sum of Xj within d [lag distance] of i is relatively large, negative when the sum of Xj within d of i is relatively small, and approximates zero when the sum of Xj within d of i is intermediate by comparison. [@Premo2004]
 G <- spdep::localG(spX$Date..AD., listw=nb2listw(X_nb75, style="W"))
 ```
 
