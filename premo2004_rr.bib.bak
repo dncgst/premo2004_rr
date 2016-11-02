@@ -1,0 +1,138 @@
+% This file was created with JabRef 2.10.
+% Encoding: UTF8
+
+
+@Book{Bivand2008,
+  Title                    = {{A}pplied spatial data analysis with {R}},
+  Author                   = {Bivand, R. and Pebesma, E.J. and Rubio, V.G.},
+  Publisher                = {Springer},
+  Year                     = {2008},
+  Series                   = {Use R!},
+
+  ISBN                     = {9780387781716},
+  Lccn                     = {2008931196},
+  Owner                    = {dncgst},
+  Timestamp                = {2013.01.21},
+  Url                      = {http://books.google.it/books?id=4gg8yx\_lcj0C}
+}
+
+@Article{Bove1981,
+  Title                    = {Trend Surface Analysis and the Lowland Classic Maya Collapse},
+  Author                   = {Frederick J. Bove},
+  Journal                  = {American Antiquity},
+  Year                     = {1981},
+
+  Month                    = {Jan},
+  Number                   = {1},
+  Pages                    = {93-112},
+  Volume                   = {46},
+
+  Doi                      = {10.2307/279989},
+  File                     = {Bove1981.pdf:science_article/Bove1981.pdf:PDF},
+  Keywords                 = {Spatial autocorrelation, Spatial Analysis, Maya, Trend surface analysis,},
+  Owner                    = {dncgst},
+  Timestamp                = {2016.08.24},
+  Url                      = {http://www.jstor.org/stable/279989}
+}
+
+@Book{Dale2014,
+  Title                    = {Spatial Analysis: A Guide for Ecologists},
+  Author                   = {Dale, M.R.T. and Fortin, M.J.},
+  Publisher                = {Cambridge University Press},
+  Year                     = {2014},
+  Edition                  = {Second Edition},
+
+  ISBN                     = {9781139991445},
+  Keywords                 = {Spatial Analysis, Ecological modelling,},
+  Owner                    = {dncgst},
+  Timestamp                = {2016.08.19}
+}
+
+@Article{Kvamme1990,
+  Title                    = {Spatial Autocorrelation and the Classic Maya Collapse revisited: Refined techniques and new conclusions},
+  Author                   = {Kenneth L. Kvamme},
+  Journal                  = {Journal of Archaeological Science},
+  Year                     = {1990},
+  Number                   = {2},
+  Pages                    = {197 - 207},
+  Volume                   = {17},
+
+  Doi                      = {http://dx.doi.org/10.1016/0305-4403(90)90059-E},
+  File                     = {Kvamme1990.pdf:science_article/Kvamme1990.pdf:PDF},
+  ISSN                     = {0305-4403},
+  Keywords                 = {Spatial autocorrelation, Spatial Analysis,},
+  Owner                    = {dncgst},
+  Timestamp                = {2016.07.15},
+  Url                      = {http://www.sciencedirect.com/science/article/pii/030544039090059E}
+}
+
+@InCollection{Neiman1997,
+  Title                    = {Conspicuous consumption as wasteful advertising: a Darwinian perspective on spatial patterns in ClClassic Maya terminal monument dates},
+  Author                   = {F. D. Neiman},
+  Booktitle                = {Rediscovering Darwin: Evolutionary Theory and Archaeological Explanation},
+  Publisher                = {American Anthropological Association},
+  Year                     = {1997},
+  Editor                   = {C. Barton and  G. Clark},
+  Pages                    = {267--290},
+  Series                   = {Archaeological Papers of the American Anthropological Association},
+  Volume                   = {7},
+
+  Keywords                 = {Spatial Analysis, Maya,},
+  Owner                    = {dncgst},
+  Timestamp                = {2016.08.25}
+}
+
+@Article{Premo2004,
+  Title                    = {Local spatial autocorrelation statistics quantify multi-scale patterns in distributional data: an example from the Maya Lowlands },
+  Author                   = {L.S. Premo},
+  Journal                  = {Journal of Archaeological Science },
+  Year                     = {2004},
+  Number                   = {7},
+  Pages                    = {855 - 866},
+  Volume                   = {31},
+
+  Doi                      = {http://dx.doi.org/10.1016/j.jas.2003.12.002},
+  File                     = {Premo2004.pdf:science_article/Premo2004.pdf:PDF},
+  ISSN                     = {0305-4403},
+  Keywords                 = {Spatial autocorrelation, Spatial analysis,},
+  Owner                    = {dncgst},
+  Timestamp                = {2014.09.03},
+  Url                      = {http://www.sciencedirect.com/science/article/pii/S0305440303001948}
+}
+
+@Article{Whitley1985,
+  Title                    = {Spatial autocorrelation tests and the Classic Maya collapse: Methods and inferences},
+  Author                   = {David S. Whitley and William A.V. Clark},
+  Journal                  = {Journal of Archaeological Science},
+  Year                     = {1985},
+  Number                   = {5},
+  Pages                    = {377 - 395},
+  Volume                   = {12},
+
+  Doi                      = {http://dx.doi.org/10.1016/0305-4403(85)90066-4},
+  File                     = {Whitley1985.pdf:science_article/Whitley1985.pdf:PDF},
+  ISSN                     = {0305-4403},
+  Keywords                 = {Spatial autocorrelation, Spatial Analysis,},
+  Owner                    = {dncgst},
+  Timestamp                = {2016.07.15},
+  Url                      = {http://www.sciencedirect.com/science/article/pii/0305440385900664}
+}
+
+@Article{Williams1993,
+  Title                    = {Spatial Autocorrelation and the Classic Maya Collapse: One Technique, One Conclusion},
+  Author                   = {Jeff T. Williams},
+  Journal                  = {Journal of Archaeological Science},
+  Year                     = {1993},
+  Number                   = {6},
+  Pages                    = {705 - 709},
+  Volume                   = {20},
+
+  Doi                      = {http://dx.doi.org/10.1006/jasc.1993.1044},
+  File                     = {Williams1993.pdf:science_article/Williams1993.pdf:PDF},
+  ISSN                     = {0305-4403},
+  Keywords                 = {Spatial Autocorrelation, Spatial Analysis,},
+  Owner                    = {dncgst},
+  Timestamp                = {2016.07.15},
+  Url                      = {http://www.sciencedirect.com/science/article/pii/S0305440383710447}
+}
+
