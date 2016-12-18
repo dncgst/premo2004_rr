@@ -1,6 +1,6 @@
 ---
-title: "Premo 2004 - Reproduced Research"
-subtitle: "Spatial autocorrelation"
+title: "Local indicators of spatial association (LISA)"
+subtitle: "A reproduced research by Premo, 2004"
 author: "Domenico Giusti"
 bibliography: "../premo2004_rr.bib"
 output: html_document
@@ -10,37 +10,50 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## Introduction
+
+Reproducible research is scholarship [@Claerbout1992].
+
+> The scholarship does not only consist of theorems and proofs but also (and perhaps even more important) of data, computer code and a runtime environment which provides readers with the possibility to reproduce all tables and figures in an article. [@Hothorn2009]
+
+Standing on this principle, the present project aims to experiment with local indicators of spatial association, reproducing the results of an original research by L.S.Premo, 2004, Local spatial autocorrelation statistics quantify multi-scale patterns in distributional data: an example from the Maya Lowlands, Journal of Archaeological Science 31, 855-866.
+
+Local indicators of spatial association (LISA) [@Anselin1995] ...
+
+Despite the great potential of LISA in the analysis of archaeological spatial patterning, local spatial autocorrelation statistics have found few archaeological applications.
+
+Premo's research serves as
+
+> one example of how local spatial statistics can further strengthen distributional archaeological interpretation. [@Premo2004]
+
+
+
 ## Reading data
 
+> Site coordinates have been included in this report in hopes that interested researchers will take this opportunity to experiment with the local spatial autocorrelation analysis. (Premo, 2004, p.858)
+
 ```{r}
-# read csv
+# read data
 setwd("~/project/premo2004_rr/")
 X <- read.csv("data/Premo2004_table1.csv", header=TRUE, sep=",", skip=0)
 
-# convert to SpatialPointDataframe
+# convert dataframe to SpatialPointDataframe
 library(sp)
 coo <- X[,c(4,3)]
 spX <- SpatialPointsDataFrame(coo, X, proj4string=CRS(as.character(NA)))
-
 coords <- coordinates(spX)
 id <- row.names(as(spX, "data.frame"))
 ```
 
-## 4. Spatial data and methods
+## Spatial data and methods
 
 ```{r}
-# table 1
+# tab.1
 library(knitr)
 kable(X)
 ```
 
 > Table 1 presents the spatial data used in this analysis. Note that it includes the same 47 sites that [@Bove1981], [@Whitley1985], [@Kvamme1990], and [@Williams1993] analyzed. [@Premo2004]
-
-```{r}
-# fig.0
-library(ggplot2)
-ggplot(data=X, aes(x=Easting..km., y=Northing..km., col=Date..AD.)) + geom_point() + coord_fixed(ratio=1) + theme_bw() + xlab("Km East") + ylab("Km North") + ggtitle("Fig.0")
-```
 
 ### Trend surface analysis
 
@@ -50,6 +63,8 @@ ggplot(data=X, aes(x=Easting..km., y=Northing..km., col=Date..AD.)) + geom_point
 
 ```{r}
 # fig.1
+library(ggplot2)
+ggplot(data=X, aes(x=Easting..km., y=Northing..km., col=Date..AD.)) + geom_point() + coord_fixed(ratio=1) + theme_bw() + xlab("Km East") + ylab("Km North") + ggtitle("Fig.0")
 ```
 
 > Fig.1. Fourth order trend surface with terminal long-count date locations. Map values are in years AD. Sites are numbered consecutively and identified by name in Table 1. [@Premo2004]
@@ -275,8 +290,7 @@ I_loc
 
 ```
 
-
-## 5. Results
+## Results
 
 > The results of the 75 km spatial lag were interpreted for two reasons. First, given the spatial distribution of the dated monuments, this particular lag distance provides the highest resolution at which each site belonged to a neighbourhood composed of at least one other site (i.e., there is no "neighbourhood" composed only of the target site). Second, this lag distance approximates the spatial lag at which the sill is apparent in the semi-variance of [@Neiman1997]'s loess trend surface residuals. [...] Depending on the spatial structure of one's data, local spatial autocorrelation results can be highly sensitive to variation in lag distance. [@Premo2004]
 
