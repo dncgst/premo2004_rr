@@ -1,6 +1,6 @@
 ---
-title: "Local indicators of spatial association (LISA)"
-subtitle: "A reproduced research by Premo, 2004"
+title: "How to do archaeological science using R (SAA2017, Session ID 2717)"
+subtitle: "Local spatial autocorrelation statistics: a reproduced research"
 author: "Domenico Giusti"
 bibliography: "../premo2004_rr.bib"
 output: html_document
@@ -58,20 +58,6 @@ kable(X)
 
 > Table 1 presents the spatial data used in this analysis. Note that it includes the same 47 sites that [@Bove1981], [@Whitley1985], [@Kvamme1990], and [@Williams1993] analyzed. [@Premo2004]
 
-### Trend surface analysis
-
-```{r}
-# trend surface analysis
-```
-
-```{r}
-# fig.1
-library(ggplot2)
-ggplot(data=X, aes(x=Easting..km., y=Northing..km., col=Date..AD.)) + geom_point() + coord_fixed(ratio=1) + theme_bw() + xlab("Km East") + ylab("Km North") + ggtitle("Fig.0")
-```
-
-> Fig.1. Fourth order trend surface with terminal long-count date locations. Map values are in years AD. Sites are numbered consecutively and identified by name in Table 1. [@Premo2004]
-
 ### Spatial autocorrelation
 
 > Autocorrelation (whether spatial or not) is a measure of similarity (correlation) between nearby observations. [...] Measures of spatial autocorrelation describe the degree two which observations (values) at spatial locations (whether they are points, areas, or raster cells), are similar to each other. Spatial autocorrelation in a variable can be exogenous (it is caused by another spatially autocorrelated variable, e.g. rainfall) or endogenous (it is caused by the process at play, e.g. the spread of a disease). (http://rspatial.org)
@@ -91,54 +77,26 @@ library(spdep)
 # graph-based neighbours
 # > All the graph-based neigbour schemes always ensure that all the points will have at least one neighbour. [@Bivand2008, p.246]
 # > Note that graph-based representations contruct the interpoint relationships based on Euclidean distance, with no option to use Great Circle distances for geographical coordinates. [@Bivand2008, p.244]
-library(tripack)
 ## Delaunay triangulation neighbours
 # > The neighbour relationships are defined by the triangulation, which extends outwards to the convex hull of the points.
-X_del <- tri2nb(coords, row.names=id)
-X_del <- deldir::deldir(as.data.frame(coords), plotit=TRUE, main="Delauney triangulation neighbours")
 ## Sphere of Influence neighbours
 # > SOI thins the triangulation, removing links that are relatively long. Delaunay and SOI neighbours are symmetric by design: if i is a neighbour of j, then j is a neighbour of i.
-X_soi <- graph2nb(soi.graph(X_del, coords), row.names=id)
 ## Gabriel graph neighbours
 # > Gabeial graph is also a subgraph of the Delaunay triangulation, retaining a different set of neigbours. It does not, however, guarantee symmetry.
-X_gab <- graph2nb(gabrielneigh(coords), row.names=id)
-plot(X$Easting..km., X$Northing..km., xlim=c(0,400), asp=1, main="Gabriel graph neighbours")
-plot(X_gab, coords, add=TRUE)
 ## Relative graph neighbours
-X_rel <- graph2nb(relativeneigh(coords), row.names=id)
-plot(X$Easting..km., X$Northing..km., xlim=c(0,400), asp=1, main="Relative graph neighbours")
-plot(X_rel, coords, add=TRUE)
-is.symmetric.nb(X_rel) #force=TRUE if the symmetry attribute is to be overridden
 
 # distance-based neighbours
 # > An alternative method is to choose the k nearest neighbours - this adapts across the study area, taking account of differences in the densities of areal entities. Naturally, in the overwhelming majority of cases, it leads to asymmetric neighbours, but will ensure that all areas have k neighbours. [...] knearneigh can also take a longlat argument to handle geographical coordinates. [@Bivand2008, p.246]
 ## k nearest neighbour
-X_kn1 <- knn2nb(knearneigh(coords, k=1), row.names=id)
-plot(X$Easting..km., X$Northing..km., xlim=c(0,400), asp=1, main="K nearest neighbour (k=1)")
-plot(X_kn1, coords, add=TRUE)
-X_kn2 <- knn2nb(knearneigh(coords, k=2), row.names=id)
-plot(X$Easting..km., X$Northing..km., xlim=c(0,400), asp=1, main="K nearest neighbour (k=2)")
-plot(X_kn2, coords, add=TRUE)
-X_kn4 <- knn2nb(knearneigh(coords, k=4), row.names=id)
-plot(X$Easting..km., X$Northing..km., xlim=c(0,400), asp=1, main="K nearest neighbour (k=4)")
-plot(X_kn4, coords, add=TRUE)
 ## nearest neighbour based on a specified distance
 # > The k=1 object is also useful in finding the minimum distance at which all areas have a distance-based neighbour. [@Bivand2008, p.246]
-dis <- unlist(nbdists(X_kn1, coords))
-summary(dis)
-X_kd1 <- dnearneigh(coords, d1=0, d2=1*max(dis), row.names=id)
-plot(X$Easting..km., X$Northing..km., xlim=c(0,400), asp=1, main="Distance-based neighbour (67.20km)")
-plot(X_kd1, coords, add=TRUE)
 ## nearest neighbour by row distance
-X_nb25 <- dnearneigh(coords, d1=0, d2=25, row.names=id)
-X_nb50 <- dnearneigh(coords, d1=0, d2=50, row.names=id)
 X_nb75 <- dnearneigh(coords, d1=0, d2=75, row.names=id)
 plot(X$Easting..km., X$Northing..km., xlim=c(0,450), ylim=c(0,450), asp=1, main="Nearest neighbour (75km)")
 plot(X_nb75, coords, add=TRUE)
 
 # higher-order neighbours
 # > Distance bands can be generated by using a sequence of d1 and d2 argument values for the dnearneigh function if needed to construct a spatial autocorrelogram as understood in ecology. In other conventions, correlograms are constructed by taking an input list of neighbours as the first-order sets, and stepping out across the graph to [...] higher-order neighbours [@Bivand2008, p.249]
-X_nb_lags <- nblag(X_kn1, maxlag=2)
 ```
 
 #### Spatial weights
@@ -155,87 +113,20 @@ X_nb_lags <- nblag(X_kn1, maxlag=2)
 # > The nb2listw function takes a neighbours list object and convert it into a weights object. The default conversion style is W, where the weights for each areal entity are standardised to sum to unity [@Bivand2008, p.251]
 
 ## W style, the weights vary between unity divided by the largest and smallest numbers of neighbours, and the sum of weights for each areal entity are unity. The weights for links originating at areas with few neighbours are larger than those originating at areas with many neighbours.
-X_lw_W <- nb2listw(X_nb75, style="W")
 
 ## B style (binary), retains a weight of unity for each neighbour relationship, but in this case, the sum of weights for areas ddiffer according to the numbers of neighbour areas have.
 X_lw_B <- nb2listw(X_nb75, style="B")
 
 # C style, the complete set of C weights sums to the number of areas.
-X_lw_C <- nb2listw(X_nb75, style="C")
 
 # U style, U weights sum to unity.
-X_lw_U <- nb2listw(X_nb75, style="U")
 
-# S style, the variance-stabilising coding scheme seeks to moderate the conflicting impacts. 
-X_lw_S <- nb2listw(X_nb75, style="S")
+# S style, the variance-stabilising coding scheme seeks to moderate the conflicting impacts.
 ```
 
 #### Spatial autocorrelation: global tests
 
-> [@Moran1948] proposed a coefficient of spatial autocorrelation, Moran's _I_, stemming from the Pearson correlation coefficient [...]. As with Pearson's correlation coeffient, positive autocorrelation is indicated by positive values (usually ranging from 0 to 1), negative autocorrelation by negative values (usually ranging from 0 to -1) and the expected value for the absence of spatial autocorrelation is close to 0 [...]. When there are too few pairs of sampling locations in distance class d, and the spatial layout of the data looks non-stationary, the estimated values is unstable and can fall outside the expected bounded range of -1 to +1. This occurs most often at the largest distances where there are fewest pairs contributing to the index. [@Dale2014, p.145]
-
-> The spatial autocorrelation coeficient, for a distance class d, is the average value of spatial autocorrelation at that distance (in all directions) for the entire study area: a _global average isotropic_ estimated value of spatial autocorrelation. [@Dale2014, p.146]
-
-> Furthermore, by compution the deviation of each value from the arithmetic mean of the variable, the estimation of spatial autocorrelation can be biased when the data are not normally distributed. [@Dale2014, p.146]
-
-> To avoid measures of spatial patter based on deviation from the arithmetic mean, [@Geary1954] proposed another spatial autocorrelation coefficient, Geary's _c_, that measures the difference between values of a variable at nearby locations, so that the degree of spatial autocorrelation is based on differences at a given _d_ distance class. [it] varies from 0 (indicating the highest value of positive autocorrelation) to 2 and greater (strong negative autocorrelation). [@Dale2014, p.146]
-
-##### Normal and Randomization Inference
-
-```{r}
-# global tests
-## Moran's I
-### > The randomisation option is set to TRUE by default, which implies that in order to get inference based on a normal approximation, it must be explicitly set to FALSE. Similarly, the default is a one-sided test, so that in order to obtain the results for the (more commonly used) two-sided test, the option alternative must be set explicitly to "two.sided". Note also that the zero.policy option is set to FALSE by default, which means that islands result in a missing value code (NA). Setting this option to TRUE will set the spatial lag for islands to the customary zero value. moran.test(spX$Date..AD., listw=nb2listw(X_nb25), zero.policy=TRUE, adjust.n=TRUE) [@Anselin]
-I <- moran.test(spX$Date..AD., listw=nb2listw(X_nb75, style="B"))
-I
-
-## Geary's c
-```
-
-##### Permutation Inference
-
-```{r}
-# global tests
-## Moran's I
-set.seed(1234)
-I_mc <- moran.mc(spX$Date..AD., listw=nb2listw(X_nb75, style="B"), nsim=99)
-I_mc$res
-foo <- I_mc$res[1:length(I_mc$res)-1] #remove the last element
-bar <- density(foo)
-### plot three graphs on top of each other: a (continuous) density function (based on zz), a histogram for the reference distribution, and a line indicating the observed Moran’s I.
-plot(bar, ylim=c(0,30), col=2, main="Moran's I permutation test"); hist(foo, freq=TRUE, add=TRUE); abline(v=I_mc$statistic, col=4)
-```
-
-##### Correlogram & Plot
-
-```{r}
-# correlograms
-## Moran's I for lag orders
-X_cor8 <- sp.correlogram(neighbours=X_nb25, var=spX$Date..AD., order=8, method="I", style="W")
-X_cor3 <- sp.correlogram(neighbours=X_nb25, var=spX$Date..AD., order=3, method="I", style="W", zero.policy = TRUE)
-print(X_cor3, p.adjust.methods="holm")
-plot(X_cor3)
-## Moran's I for regression residuals
-X_res <- sp.correlogram(neighbours=X_nb75, residuals())
-## Moran's I (or Geary's c) for distance bands
-library(pgirmess)
-X_corD <- pgirmess::correlog(coordinates(spX), spX$Date..AD., method="Moran", nbclass=8)
-print(X_corD)
-plot(X_corD); abline(h=0, lty=2) #Moran
-plot(X_corD); abline(h=1, lty=2) #Geary
-## Moran's I
-library(ncf)
-ncf::plot.correlog(ncf::correlog(x=spX$Easting..km., y=spX$Northing..km., z=spX$Date..AD., increment=25))
-```
-
-```{r}
-# global Moran scatterplot
-par(pty="s")
-moran.plot(spX$Date..AD., listw=nb2listw(X_nb75, style="B"), labels=as.character(spX$Site.number))
-
-# standardized Moran scatterplot
-standard.moran.plot(spX$Date..AD., nb2listw(X_nb75, style="B"))
-```
+...
 
 #### Spatial autocorrelation: local tests
 
@@ -249,21 +140,6 @@ standard.moran.plot(spX$Date..AD., nb2listw(X_nb75, style="B"))
 
 > Standardized Ii and Gi variates were calculated for lag distances up to and including 200 km at 25 km intervals (Table 2). [@Premo2004]
 
-```{r}
-# tab.2
-## lag distances
-lag <- seq(25, 200, 25)
-
-## matrix
-tab2 <- matrix(data=NA, nrow=47, ncol=18)
-colnames(tab2) <- c("Site", "Date(AD)", "")
-
-## loop
-for (i in lag) {
-  
-}
-```
-
 > Table2. Standardized I i and G i* variates at lag distances from 25 to 200 km. Note that “–” is reported for sites that possess zero neighbors [@Premo2004]
 
 ```{r}
@@ -271,18 +147,11 @@ for (i in lag) {
 # > Like its global predecessor, local I measures the degree to which a target value is similar to the values displayed by adjacent locales. Unlike global I, however, the local version measures the similarity between each target value and the values within its neighborhood. [...] Local Moran's I is large and positive when Xi is similar to adjacent values of Xj; large and negative when Xi and neighboring values Xj are dissimilar; and approximates to zero when no spatial autocorrelation exists between Xi and neighboring Xj. [@Premo2004]
 I_loc <- spdep::localmoran(spX$Date..AD., listw=nb2listw(X_nb75, style="B"))
 # local Moran's I (two.sided)
-I_loc <- spdep::localmoran(spX$Date..AD., listw=nb2listw(X_nb75, style="B"), alternative="two.sided")
+#I_loc <- spdep::localmoran(spX$Date..AD., listw=nb2listw(X_nb75, style="B"), alternative="two.sided")
 
 # local Getis G
 # > G is positive when the sum of Xj within d [lag distance] of i is relatively large, negative when the sum of Xj within d of i is relatively small, and approximates zero when the sum of Xj within d of i is intermediate by comparison. [@Premo2004]
 G_loc <- spdep::localG(spX$Date..AD., listw=nb2listw(X_nb75, style="B"))
-```
-
-```{r}
-# alternative packages: lctools, 
-library(lctools)
-## local Moran's I
-I_loc <- lctools::l.moransI(coords,1,spX$Date..AD.)
 ```
 
 > While consideration of raw statistics does not materially change conclusions, in the interests of convenience and clarity, only standardized results will be discussed [...]. [@Premo2004]
@@ -291,10 +160,6 @@ I_loc <- lctools::l.moransI(coords,1,spX$Date..AD.)
 # standardized local Moran's I
 scale(I_loc[,2])
 I_loc
-```
-
-```{r}
-
 ```
 
 ## Results
@@ -308,6 +173,7 @@ spI <- maptools::spCbind(spX, as.data.frame(I_loc))
 ## bubble plot local Moran's I
 bubble(spI, "Ii", fill=TRUE, col=c("grey","black"), main="Fig.2", xlab="Km East", ylab="Km North")
 ## ggplot2 local Moran's I
+library(ggplot2)
 ggplot(data=as.data.frame(spI), aes(x=Easting..km., y=Northing..km.)) + geom_point(aes(colour=Ii, size=abs(Ii))) + scale_colour_gradient2(midpoint=0) + scale_radius() + coord_fixed(ratio=1) + theme_bw() + xlab("Km East") + ylab("Km North") + ggtitle("Fig.2")
 ```
 
