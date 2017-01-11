@@ -1,6 +1,6 @@
 ---
-title: "How to do archaeological science using R (SAA2017, Session ID 2717)"
-subtitle: "Local spatial autocorrelation statistics: a reproduced research"
+title: "SAA 2017 Workshop: Using R for Archaeological Data Analysis, Mapping, and Visualization"
+subtitle: "Local spatial autocorrelation statistics: A reproduced research case"
 author: "Domenico Giusti"
 bibliography: "../premo2004_rr.bib"
 output: html_document
@@ -20,7 +20,7 @@ Standing on this principle, the present project aims to experiment with local in
 
 Local indicators of spatial association (LISA) [@Anselin1995] ...
 
-Despite the great potential of LISA in the analysis of archaeological spatial patterning, local spatial autocorrelation statistics have found few archaeological applications.
+Despite the great potential of LISA in the analysis of archaeological spatial patterning, local spatial autocorrelation statistics have found few archaeological applications [@].
 
 Premo's research serves as
 
@@ -31,7 +31,7 @@ Premo's research serves as
 > Site coordinates have been included in this report in hopes that interested researchers will take this opportunity to experiment with the local spatial autocorrelation analysis. (Premo, 2004, p.858)
 
 ```{r}
-# read data
+# read the original table of data as a dataframe
 getwd()
 setwd("~/project/premo2004_rr/")
 X <- read.csv("data/Premo2004_table1.csv", header=TRUE, sep=",", skip=0)
@@ -48,8 +48,6 @@ library(rgdal)
 shp <- readOGR("data/central_america.shp", layer="central_america")
 ```
 
-## Spatial data and methods
-
 ```{r}
 # tab.1
 library(knitr)
@@ -57,6 +55,8 @@ kable(X)
 ```
 
 > Table 1 presents the spatial data used in this analysis. Note that it includes the same 47 sites that [@Bove1981], [@Whitley1985], [@Kvamme1990], and [@Williams1993] analyzed. [@Premo2004]
+
+## Data analysis
 
 ### Spatial autocorrelation
 

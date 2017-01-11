@@ -1,9 +1,9 @@
 premo2004_rr
 ============
 
-This repository contains a compendium of data (/data), source code (/src) and figures (/fig) reproduced from the publication: L.S.Premo, 2004, Local spatial autocorrelation statistics quantify multi-scale patterns in distributional data: an example from the Maya Lowlands, Journal of Archaeological Science 31, 855-866 (DOI: http://dx.doi.org/10.1016/j.jas.2003.12.002).
+This repository contains a compendium of data (`/data`), source code (`/src`) and figures (`/fig`) reproduced from the publication: L.S.Premo, 2004, Local spatial autocorrelation statistics quantify multi-scale patterns in distributional data: an example from the Maya Lowlands, Journal of Archaeological Science 31, 855-866 (DOI: [10.1016/j.jas.2003.12.002](http://dx.doi.org/10.1016/j.jas.2003.12.002)).
 
-The aim of the present project is to study spatial autocorrelation statistics and experiment with the local spatial autocorrelation, reproducing the results of the original research.
+The aim of the present project is to study spatial autocorrelation statistics and experiment with the local spatial autocorrelation analysis, reproducing the results of Premo's original research.
 
 Indeed,
 
@@ -23,12 +23,12 @@ The files archived at the DOI above are associated with the reproduced research.
 
 ## Repository author
 
-D. Giusti (dncgst@gnewarchaeology.it)
+D. Giusti (<dncgst@gnewarchaeology.it>)
 
-## Licenses
+## Repository licences
 
-Source code: MIT Copyright: (2016) Domenico Giusti
+Source code: [MIT](https://opensource.org/licenses/MIT) Copyright holder: (2016) Domenico Giusti
 
-Figures: CC-BY-4.0 Copyright: (2016) Domenico Giusti
+Figures: [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) Copyright holder: (2016) Domenico Giusti
 
 ## Session info

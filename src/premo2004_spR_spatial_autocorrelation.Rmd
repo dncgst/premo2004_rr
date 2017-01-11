@@ -1,6 +1,6 @@
 ---
-title: "Local indicators of spatial association (LISA)"
-subtitle: "A reproduced research by Premo, 2004"
+title: "Local spatial autocorrelation statistics quantify multi-scale patterns in distributional data"
+subtitle: "Reproduced results of the original research by Premo, 2004"
 author: "Domenico Giusti"
 bibliography: "../premo2004_rr.bib"
 output: html_document
