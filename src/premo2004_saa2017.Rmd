@@ -16,21 +16,23 @@ Reproducible research is scholarship [@Claerbout1992].
 
 > The scholarship does not only consist of theorems and proofs but also (and perhaps even more important) of data, computer code and a runtime environment which provides readers with the possibility to reproduce all tables and figures in an article. [@Hothorn2009]
 
-Standing on this principle, the present project aims to experiment with local indicators of spatial association, reproducing the results of an original research by L.S.Premo, 2004, Local spatial autocorrelation statistics quantify multi-scale patterns in distributional data: an example from the Maya Lowlands, Journal of Archaeological Science 31, 855-866.
+Standing on this principle, the present project aims to experiment with local spatial autocorrelation statistics, reproducing the results of an original research by L.S.Premo (2004) "Local spatial autocorrelation statistics quantify multi-scale patterns in distributional data: an example from the Maya Lowlands", Journal of Archaeological Science 31, 855-866.
 
-Local indicators of spatial association (LISA) [@Anselin1995] ...
+Autocorrelation is a measure of similarity (correlation) between nearby observations. Measures of spatial autocorrelation describe the degree two which observations (values) at spatial locations are similar to each other (http://rspatial.org). Unlike their global counterpart, the local indicators of spatial association (LISA) [@Anselin1995] do not assume an homogeneous distribution, but investigate correlations at the local level.
 
-Despite the great potential of LISA in the analysis of archaeological spatial patterning, local spatial autocorrelation statistics have found few archaeological applications [@].
+Despite the great potential of LISA in the analysis of archaeological spatial patterning, local spatial autocorrelation statistics have found very few archaeological applications [@Premo2004; @Cardillo2016].
 
 Premo's research serves as
 
 > one example of how local spatial statistics can further strengthen distributional archaeological interpretation. [@Premo2004]
 
+By applying local Moran's I~i~ and G~i~ statistics to a set of 47 dated Classical Period monuments in the southern Maya Lowlands, @Premo2004 quantitatively detects at local scale previously unobserved spatial structures.
+
 ## Reading data
 
-> Site coordinates have been included in this report in hopes that interested researchers will take this opportunity to experiment with the local spatial autocorrelation analysis. (Premo, 2004, p.858)
+> Site coordinates have been included in this report in hopes that interested researchers will take this opportunity to experiment with the local spatial autocorrelation analysis. [@Premo2004, pp. 858]
 
-```{r}
+```{r, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
 # read the original table of data as a dataframe
 getwd()
 setwd("~/project/premo2004_rr/")
@@ -48,28 +50,22 @@ library(rgdal)
 shp <- readOGR("data/central_america.shp", layer="central_america")
 ```
 
-```{r}
+> Table 1 presents the spatial data used in this analysis. Note that it includes the same 47 sites that @Bove1981, @Whitley1985, @Kvamme1990, and @Williams1993 analyzed. [@Premo2004, pp. 858]
+
+```{r, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
 # tab.1
 library(knitr)
 kable(X)
 ```
 
-> Table 1 presents the spatial data used in this analysis. Note that it includes the same 47 sites that [@Bove1981], [@Whitley1985], [@Kvamme1990], and [@Williams1993] analyzed. [@Premo2004]
+## Data analysis: Local spatial autocorrelation statistics
 
-## Data analysis
-
-### Spatial autocorrelation
-
-> Autocorrelation (whether spatial or not) is a measure of similarity (correlation) between nearby observations. [...] Measures of spatial autocorrelation describe the degree two which observations (values) at spatial locations (whether they are points, areas, or raster cells), are similar to each other. Spatial autocorrelation in a variable can be exogenous (it is caused by another spatially autocorrelated variable, e.g. rainfall) or endogenous (it is caused by the process at play, e.g. the spread of a disease). (http://rspatial.org)
-
-> Spatial autocorrelation statistics measure and analyze the degree of dependency among observations in a geographic space. Classic spatial autocorrelation statistics include Moran's I, Geary's C, Getis's G. [...] These statistics require measuring a spatial weights matrix that reflects the intensity of the geographic relationship between observations in a neighborhood. [...] Classic spatial autocorrelation statistics compare the spatial weights to the covariance relationship at pairs of locations. Spatial autocorrelation that is more positive than expected from random indicate the clustering of similar values across geographic space, while significant negative spatial autocorrelation indicates that neighboring values are more dissimilar than expected by chance, suggesting a spatial pattern similar to a chess board. (https://en.wikipedia.org/wiki/Spatial_analysis#Spatial_autocorrelation)
-
-```{r}
+```{r, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
 # > spdep – sp.correlogram, moran, moran.plot, moran.test, moran.mc. This is the most comprehensive package, and also the most difficult to work with. Does everything, has steep learning curve. (https://www.r-bloggers.com/spatial-correlograms-in-r-a-mini-overview/)
 library(spdep)
 ```
 
-#### Spatial neighbours
+### Spatial neighbours
 
 > The first step is to define which relationships between observations are to be given a non-zero weight, that is to choose the neighbour criterion to be used [@Bivand2008, p.239]
 
@@ -99,7 +95,7 @@ plot(X_nb75, coords, add=TRUE)
 # > Distance bands can be generated by using a sequence of d1 and d2 argument values for the dnearneigh function if needed to construct a spatial autocorrelogram as understood in ecology. In other conventions, correlograms are constructed by taking an input list of neighbours as the first-order sets, and stepping out across the graph to [...] higher-order neighbours [@Bivand2008, p.249]
 ```
 
-#### Spatial weights
+### Spatial weights
 
 > [...] the second is to assign weights to the identified neighbour links [@Bivand2008, p.239]
 
@@ -124,15 +120,9 @@ X_lw_B <- nb2listw(X_nb75, style="B")
 # S style, the variance-stabilising coding scheme seeks to moderate the conflicting impacts.
 ```
 
-#### Spatial autocorrelation: global tests
-
-...
-
-#### Spatial autocorrelation: local tests
+### Spatial autocorrelation: local tests
 
 > While the average value of spatial dependence is meangful where only one process occurs (either induced or inherent dependence), it is misleading when several processes act at various intensities in different parts of the study area. [@Dale2014, p.164]
-
-> [@Anselin1995] proposed 'LISA' (local indicator of spatial association) as an acronym for those local spatial statistics. [@Dale2014, p.164]
 
 > [...] positive values of _Ii_ indicate that the values in the vicinity of location _i_ and at locaion _i_ are either all larger (positive deviation) or smaller (negative deviation) than the average. Negative values of _Ii_ also indicate that the deviation from the the average is either larger or smaller than the average but where the value at location _i_ is of a different sign from its neighbours. When the value of _Ii_ is close to zero, the deviation from the average is small and no local spatial structure can be detected. [@Dale2014, p.165]
 
@@ -173,8 +163,8 @@ spI <- maptools::spCbind(spX, as.data.frame(I_loc))
 ## bubble plot local Moran's I
 bubble(spI, "Ii", fill=TRUE, col=c("grey","black"), main="Fig.2", xlab="Km East", ylab="Km North")
 ## ggplot2 local Moran's I
-library(ggplot2)
-ggplot(data=as.data.frame(spI), aes(x=Easting..km., y=Northing..km.)) + geom_point(aes(colour=Ii, size=abs(Ii))) + scale_colour_gradient2(midpoint=0) + scale_radius() + coord_fixed(ratio=1) + theme_bw() + xlab("Km East") + ylab("Km North") + ggtitle("Fig.2")
+#library(ggplot2)
+#ggplot(data=as.data.frame(spI), aes(x=Easting..km., y=Northing..km.)) + geom_point(aes(colour=Ii, size=abs(Ii))) + scale_colour_gradient2(midpoint=0) + scale_radius() + coord_fixed(ratio=1) + theme_bw() + xlab("Km East") + ylab("Km North") + ggtitle("Fig.2")
 ```
 
 > Fig.2 presents standardized Ii variates at a lag distance of 75 km. [...] Large positive Ii scores are indicative of positive local spatial autocorrelation, where neighbouring sites display terminal dates that are similar to that of the target site. These scores mark spatially defined concentrations of comparable terminal dates [...]. Sites assigned negative Ii scores posses terminal long-count dates that are quite dissimilar from those of their neighbors. [@Premo2004]
@@ -194,7 +184,7 @@ spG <- maptools::spCbind(spX, spG)
 ## bubble plot local Getis's G
 bubble(spG, "spG", fill=TRUE, col=c("grey","black"), main="Fig.3", xlab="Km East", ylab="Km North")
 ## ggplot2 local Getis's G
-ggplot(data=as.data.frame(spG), aes(x=Easting..km., y=Northing..km.)) + geom_point(aes(colour=spG, size=abs(spG))) + scale_colour_gradient2(midpoint=0) + scale_radius() + coord_fixed(ratio=1) + theme_bw() + xlab("Km East") + ylab("Km North") + ggtitle("Fig.3")
+#ggplot(data=as.data.frame(spG), aes(x=Easting..km., y=Northing..km.)) + geom_point(aes(colour=spG, size=abs(spG))) + scale_colour_gradient2(midpoint=0) + scale_radius() + coord_fixed(ratio=1) + theme_bw() + xlab("Km East") + ylab("Km North") + ggtitle("Fig.3")
 ```
 
 > Fig.3 presents standardized Gi scores at a lag distance of 75 km. In this context positive scores are indicative of neighborhoods composed (mostly) of sites possessing late terminal long-count dates, and scores near zero identify neighborhoods whose terminal long-count dates when summed are intermediate by comparison. [@Premo2004]
